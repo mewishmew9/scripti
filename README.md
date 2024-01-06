@@ -1,1 +1,2 @@
 # scripti
+skididi yes
