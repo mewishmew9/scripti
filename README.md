@@ -1,2 +1,2 @@
 # scripti
-skididi yes
+# skididi yes
