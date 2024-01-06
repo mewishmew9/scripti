@@ -1,0 +1,122 @@
+local plr = game.Players.LocalPlayer
+local char = plr.Character or plr.CharacterAdded:Wait()
+local m = plr:GetMouse()
+
+local on = true
+
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local TextButton = Instance.new("TextButton")
+local UICorner_2 = Instance.new("UICorner")
+local TextLabel = Instance.new("TextLabel")
+local TextBox = Instance.new("TextBox")
+local UICorner_3 = Instance.new("UICorner")
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.ResetOnSpawn = false
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(47, 47, 47)
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.00697211176, 0, 0.813519061, 0)
+Frame.Size = UDim2.new(0.160358563, 0, 0.173233703, 0)
+UICorner.Parent = Frame
+TextButton.Parent = Frame
+TextButton.AnchorPoint = Vector2.new(0.5,0.5)
+TextButton.BackgroundColor3 = Color3.fromRGB(40, 223, 101)
+TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0.5, 0, 0.85, 0)
+TextButton.Size = UDim2.new(0.900621116, 0, 0.285067827, 0)
+TextButton.Font = Enum.Font.SourceSans
+TextButton.Text = "ON"
+TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.TextSize = 14.000
+UICorner_2.Parent = TextButton
+TextLabel.Parent = Frame
+TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1.000
+TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BorderSizePixel = 0
+TextLabel.Position = UDim2.new(0.149068326, 0, 0.138461545, 0)
+TextLabel.Size = UDim2.new(0.695652187, 0, 0.200000003, 0)
+TextLabel.Font = Enum.Font.SourceSans
+TextLabel.Text = "Coolio"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextSize = 14.000
+TextBox.Parent = Frame
+TextBox.AnchorPoint = Vector2.new(0.5,0.5)
+TextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+TextBox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextBox.BorderSizePixel = 0
+TextBox.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextBox.Size = UDim2.new(0, 145, 0, 22)
+TextBox.Font = Enum.Font.SourceSans
+TextBox.PlaceholderText = "TOOLHANDLETOFOLLOW"
+TextBox.Text = "Handle"
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.TextSize = 14.000
+UICorner_3.Parent = TextBox
+
+local SELECTH = Instance.new("Highlight")
+SELECTH.OutlineColor = Color3.new(1, 0, 0)
+SELECTH.FillColor = Color3.new(1, 0, 0)
+SELECTH.Parent = game.Lighting
+
+TextButton.Activated:Connect(function()
+	on = not on
+	if on then
+		TextButton.BackgroundColor3 = Color3.fromRGB(40, 223, 101)
+		TextButton.Text = "ON"
+	else
+		TextButton.BackgroundColor3 = Color3.fromRGB(223, 110, 66)
+		TextButton.Text = "OFF"
+	end
+end)
+
+local currentTarget = nil
+
+game:GetService("RunService").RenderStepped:Connect(function()
+	pcall(function()
+		if on then
+			if m.Target ~= nil then
+				if m.Target.Parent:FindFirstChildWhichIsA("Humanoid") then
+					currentTarget = m.Target.Parent
+				elseif m.Target.Parent.Parent:FindFirstChildWhichIsA("Humanoid") then
+					currentTarget = m.Target.Parent.Parent
+				end
+			end
+			if currentTarget ~= nil then
+				SELECTH.Parent = currentTarget
+			else
+				SELECTH.Parent = game.Lighting
+			end
+			if char ~= nil and currentTarget ~= nil then
+				if char:FindFirstChildWhichIsA("Tool") then
+					if char:FindFirstChildWhichIsA("Tool"):FindFirstChild(TextBox.Text) then
+						if char:FindFirstChild("Right Arm") and currentTarget:FindFirstChild("HumanoidRootPart") then
+							local tool = char:FindFirstChildWhichIsA("Tool")
+							local handle = tool:FindFirstChild(TextBox.Text)
+							handle.Massless = true
+							handle.Position = currentTarget:GetPivot().Position
+						elseif char:FindFirstChild("RightHand") then
+							local tool = char:FindFirstChildWhichIsA("Tool")
+							local handle = tool:FindFirstChild(TextBox.Text)
+							handle.Massless = true
+							handle.Position = currentTarget:GetPivot().Position
+						end
+					end
+				end
+			else
+				if plr.Character ~= nil then
+					char = plr.Character
+				end
+			end
+		else
+			pcall(function()
+				currentTarget = nil
+			end)
+		end
+	end)
+end)
